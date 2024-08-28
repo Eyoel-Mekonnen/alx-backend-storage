@@ -4,20 +4,27 @@ DROP PROCEDURE IF EXISTS ComputeAverageScoreForUser;
 CREATE PROCEDURE ComputeAverageScoreForUser (IN user_id INT)
 BEGIN
 DECLARE averagescore FLOAT;
-DECLARE userid INT;
+DECLARE userid INT ;
 DECLARE counts INT;
-SET userid = user_id;
-SELECT SUM(score), COUNT(user_id) INTO averagescore, counts
+DECLARE totalsum INT;
+
+SELECT SUM(score) INTO totalsum
 FROM corrections
-WHERE user_id = userid;
+WHERE corrections.user_id = user_id;
+
+SELECT COUNT(user_id) INTO counts
+FROM corrections
+WHERE corrections.user_id = user_id;
+
+SET averagescore = totalsum / counts;
 IF counts > 0 THEN
 	UPDATE users
-	SET average_score = averagescore / counts
-	WHERE id = userid;
+	SET average_score = averagescore
+	WHERE users.id = user_id;
 ELSE 
 	UPDATE users
 	SET average_score = 0
-	WHERE id = userid;
+	WHERE users.id = user_id;
 END IF;
 END $$
 DELIMITER ;
