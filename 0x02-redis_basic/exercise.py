@@ -20,6 +20,8 @@ class Cache():
 
     def get(self, key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
         """Get value of assocaited key."""
+        if fn is None:
+            return data
         data = self._redis.get(key)
         return fn(data)
 
