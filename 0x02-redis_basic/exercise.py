@@ -18,7 +18,7 @@ class Cache():
         self._redis.set(random, data)
         return random
 
-    def get(self, key: str, fn: Callable) -> Union[str, bytes, int, float]:
+    def get(self, key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
         """Get value of assocaited key."""
         data = self._redis.get(key)
         return fn(data)
