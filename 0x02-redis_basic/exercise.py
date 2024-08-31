@@ -2,7 +2,7 @@
 """stores instance of redis."""
 import redis
 import uuid
-from typing import Union
+from typing import Union, Callable
 
 
 class Cache():
@@ -17,3 +17,16 @@ class Cache():
         random = str(uuid.uuid4())
         self._redis.set(random, data)
         return random
+
+    def get(key: str, fn: Callable) -> Union[str, bytes, int, float]:
+        """Get value of assocaited key."""
+        data = self.redis.get(key)
+        return fn(data)
+
+    def get_str(data: bytes) -> str:
+        string = data.decode('utf-8')
+        return string
+
+    def get_int(data: bytes) -> int:
+        integer = int(data.decode('utf-8'))
+        return integer
