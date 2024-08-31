@@ -1,0 +1,2 @@
+use logs
+db.nginx.findOne()
