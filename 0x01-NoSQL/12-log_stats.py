@@ -23,9 +23,9 @@ def nginx_request_log(nginx):
         result = list(result)
         if result:
             count = result[0]['count']
-            print("    method {}: {}".format(val, count))
+            print("\tmethod {}: {}".format(val, count))
         else:
-            print("    method {}: 0".format(val))
+            print("\tmethod {}: 0".format(val))
     result2 = nginx.aggregate([
         {"$match": {'method': 'GET', 'path': '/status'}},
         {"$group": {"_id": {"method": "$method",
