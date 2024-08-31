@@ -12,9 +12,9 @@ def nginx_request_log(nginx):
     if documents:
         print("{} logs".format(documents[0]['TotalCount']))
     else:
-        print("No logs found")
+        print("0 logs")
     values = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
-
+    print("Methods:")
     for val in values:
         result = nginx.aggregate([
             {"$match": {'method': val}},
@@ -23,9 +23,9 @@ def nginx_request_log(nginx):
         result = list(result)
         if result:
             count = result[0]['count']
-            print("method {}: {}".format(val, count))
+            print("    method {}: {}".format(val, count))
         else:
-            print("method {}: 0".format(val))
+            print("    method {}: 0".format(val))
     result2 = nginx.aggregate([
         {"$match": {'method': 'GET', 'path': '/status'}},
         {"$group": {"_id": {"method": "$method",
