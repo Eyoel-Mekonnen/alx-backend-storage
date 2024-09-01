@@ -44,13 +44,15 @@ class Cache():
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Generate random key and store the input."""
         random = str(uuid.uuid4())
         self._redis.set(random, data)
         return random
-
+    
+    @call_history
     @count_calls
     def get(self, key: str,
             fn: Callable = None) -> Union[str, bytes, int, float]:
@@ -59,13 +61,15 @@ class Cache():
         if fn is None:
             return data
         return fn(data)
-
+    
+    @call_history
     @count_calls
     def get_str(self, data: bytes) -> str:
         """Convert byte to string."""
         string = data.decode('utf-8')
         return string
-
+    
+    @call_history
     @count_calls
     def get_int(self, data: bytes) -> int:
         """Convert byte to string."""
