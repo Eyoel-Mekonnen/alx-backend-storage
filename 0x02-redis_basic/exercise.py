@@ -6,6 +6,23 @@ from typing import Union, Callable
 from functools import wraps
 
 
+def call_history(method: Callable) -> Callable:
+    """Store input and output history."""
+    input_key = method.__qualname__ + ":inputs"
+    output_key = method.__qualname__ + ":outputs"
+
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """Call the function that is passed."""
+        input_argument = str(args)
+        self._redis.rpush(input_key, input_argument)
+        result = method(self, *args, **kwargs)
+        result = str(result)
+        self._redis.rpush(output_key, result)
+        return result
+    return wrapper
+
+
 def count_calls(method: Callable) -> Callable:
     """Count how much each method was called."""
     key = method.__qualname__
