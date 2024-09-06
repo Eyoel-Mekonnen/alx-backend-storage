@@ -6,6 +6,17 @@ from typing import Union, Callable
 from functools import wraps
 
 
+def replay(method: Callable) -> None:
+    """Return the replay of our history call."""
+    function_input = method.__func__ + ":inputs"
+    function_output = method.__func__ + ":outputs"
+    instance = method.__self__
+    method_input = instance._redis.lrange(function_input, 0, -1)
+    method_output = instance._redis.lrange(function_output, 0, -1)
+    
+    
+
+
 def call_history(method: Callable) -> Callable:
     """Store input and output history."""
     input_key = method.__qualname__ + ":inputs"
