@@ -13,13 +13,11 @@ def replay(method: Callable) -> None:
     instance = method.__self__
     method_input = instance._redis.lrange(function_input, 0, -1)
     method_output = instance._redis.lrange(function_output, 0, -1)
-    
     print("Cache.store was called {} times:".format(len(method_input)))
     for inputs, outputs in zip(method_input, method_output):
         input_hs = inputs.decode('utf-8')
         output_hs = outputs.decode('utf-8')
-        print("{}(*{}) -> {}".format(method.__qualname__, input_hs, output_hs))    
-    
+        print("{}(*{}) -> {}".format(method.__qualname__, input_hs, output_hs))
 
 
 def call_history(method: Callable) -> Callable:
@@ -67,7 +65,7 @@ class Cache():
         random = str(uuid.uuid4())
         self._redis.set(random, data)
         return random
-    
+
     @call_history
     @count_calls
     def get(self, key: str,
@@ -77,14 +75,14 @@ class Cache():
         if fn is None:
             return data
         return fn(data)
-    
+
     @call_history
     @count_calls
     def get_str(self, data: bytes) -> str:
         """Convert byte to string."""
         string = data.decode('utf-8')
         return string
-    
+
     @call_history
     @count_calls
     def get_int(self, data: bytes) -> int:
