@@ -8,12 +8,16 @@ from functools import wraps
 
 def replay(method: Callable) -> None:
     """Return the replay of our history call."""
-    function_input = method.__func__ + ":inputs"
-    function_output = method.__func__ + ":outputs"
+    function_input = method.__qualname__ + ":inputs"
+    function_output = method.__qualname__ + ":outputs"
     instance = method.__self__
     method_input = instance._redis.lrange(function_input, 0, -1)
     method_output = instance._redis.lrange(function_output, 0, -1)
     
+    print("Cache.store was called {} times:".format(len(method_input)))
+    for i in range(0, len(method_input) - 1):
+        print("{}(*{}) -> {}".format(method.__qualname__, method_input[i].decode('utf-8'), method_output[i].decode('utf-8')))
+    print("{}(*{}) -> {}".format(method.__qualname__, method_input[i].decode('utf-8'), method_output[i].decode('utf-8')))    
     
 
 
