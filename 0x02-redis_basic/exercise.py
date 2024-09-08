@@ -15,9 +15,10 @@ def replay(method: Callable) -> None:
     method_output = instance._redis.lrange(function_output, 0, -1)
     
     print("Cache.store was called {} times:".format(len(method_input)))
-    for i in range(0, len(method_input) - 1):
-        print("{}(*{}) -> {}".format(method.__qualname__, method_input[i].decode('utf-8'), method_output[i].decode('utf-8')))
-    print("{}(*{}) -> {}".format(method.__qualname__, method_input[i].decode('utf-8'), method_output[i].decode('utf-8')))    
+    for inputs, outputs in zip(method_input, method_output):
+        input_hs = inputs.decode('utf-8')
+        output_hs = outputs.decode('utf-8')
+        print("{}(*{}) -> {}".format(method.__qualname__, input_hs, output_hs))    
     
 
 
